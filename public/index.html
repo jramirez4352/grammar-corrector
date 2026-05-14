@@ -225,6 +225,18 @@
 
     .char-count { font-size: 0.8125rem; color: var(--muted); }
     .hint { font-size: 0.775rem; color: #9ca3af; }
+
+    /* Progress bar */
+    .progress-wrap { margin-top: 0.6rem; }
+    .progress-bar-bg {
+      height: 4px; background: var(--border); border-radius: 999px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 999px; width: 0%;
+      background: var(--accent); transition: width .2s, background .2s;
+    }
+    .progress-bar-fill.warn  { background: #f59e0b; }
+    .progress-bar-fill.danger { background: #ef4444; }
   </style>
 </head>
 <body>
@@ -250,6 +262,11 @@
   <div class="card" id="input-card">
     <label for="input">Your Text</label>
     <textarea id="input" placeholder="Type or paste your text here…" spellcheck="false"></textarea>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
 
     <!-- Correct panel -->
     <div id="panel-correct" class="panel active">
@@ -382,10 +399,16 @@
   const allCounters = ['char-count','char-count-r','char-count-t','char-count-s'];
 
   /* ── Input counter ─────────────────────────────────────── */
+  const progressFill = document.getElementById('progress-fill');
+  const MAX_CHARS = 50_000;
+
   inputEl.addEventListener('input', () => {
     const n = inputEl.value.length;
-    const str = `${n.toLocaleString()} char${n !== 1 ? 's' : ''}`;
+    const str = `${n.toLocaleString()} / 50,000`;
     allCounters.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = str; });
+    const pct = Math.min(100, (n / MAX_CHARS) * 100);
+    progressFill.style.width = pct + '%';
+    progressFill.className = 'progress-bar-fill' + (pct >= 90 ? ' danger' : pct >= 70 ? ' warn' : '');
   });
 
   inputEl.addEventListener('keydown', e => {
