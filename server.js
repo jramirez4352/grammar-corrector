@@ -88,13 +88,14 @@ app.post('/api/correct', async (req, res) => {
   }
 });
 
+const REPHRASE_BASE = 'Fix all grammar, spelling and punctuation errors, and at the same time ';
 const REPHRASE_PROMPTS = {
-  formal:       'Rewrite the following text in a formal, professional tone. Return ONLY the rewritten text, no explanations.',
-  casual:       'Rewrite the following text in a casual, conversational tone. Return ONLY the rewritten text, no explanations.',
-  concise:      'Rewrite the following text more concisely, removing unnecessary words while keeping the core meaning. Return ONLY the rewritten text, no explanations.',
-  expanded:     'Expand and enrich the following text with more detail and description. Return ONLY the rewritten text, no explanations.',
-  professional: 'Rewrite the following text for a business/professional context. Return ONLY the rewritten text, no explanations.',
-  simple:       'Rewrite the following text using simple, easy-to-understand language. Return ONLY the rewritten text, no explanations.',
+  formal:       REPHRASE_BASE + 'rewrite the text in a formal, professional tone. Return ONLY the rewritten text, no explanations.',
+  casual:       REPHRASE_BASE + 'rewrite the text in a casual, conversational tone. Return ONLY the rewritten text, no explanations.',
+  concise:      REPHRASE_BASE + 'rewrite the text more concisely, removing unnecessary words while keeping the core meaning. Return ONLY the rewritten text, no explanations.',
+  expanded:     REPHRASE_BASE + 'expand and enrich the text with more detail and description. Return ONLY the rewritten text, no explanations.',
+  professional: REPHRASE_BASE + 'rewrite the text for a business/professional context. Return ONLY the rewritten text, no explanations.',
+  simple:       REPHRASE_BASE + 'rewrite the text using simple, easy-to-understand language. Return ONLY the rewritten text, no explanations.',
 };
 
 app.post('/api/rephrase', async (req, res) => {
