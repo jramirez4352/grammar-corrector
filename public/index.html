@@ -185,6 +185,54 @@
       color: #b91c1c;
       font-size: 0.9375rem;
     }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab {
+      background: none;
+      border: none;
+      border-radius: 0;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 0.55rem 1rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color .15s, border-color .15s;
+    }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab:hover:not(.active) { color: var(--text); }
+
+    /* Style pills */
+    .style-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .style-pill {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 0.35rem 0.9rem;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .style-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .style-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
   </style>
 </head>
 <body>
@@ -192,21 +240,52 @@
 
   <header>
     <h1>Grammar Corrector</h1>
-    <p>Paste your text and get instant corrections .</p>
+    <p>Correct grammar or rephrase your text in different styles.</p>
   </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('correct')">Correct Grammar</button>
+    <button class="tab" onclick="switchTab('rephrase')">Rephrase Text</button>
+  </div>
 
   <div class="card">
     <label for="input">Your Text</label>
     <textarea id="input" placeholder="Type or paste your text here…" spellcheck="false"></textarea>
-    <div class="toolbar">
-      <button class="btn-primary" id="correct-btn" onclick="correctGrammar()">
-        <span class="spinner"></span>
-        <span class="btn-label">Correct Grammar</span>
-      </button>
-      <button class="btn-ghost" onclick="clearAll()">Clear</button>
-      <div class="toolbar-right">
-        <span class="char-count" id="char-count">0 chars</span>
-        <span class="hint">Ctrl+Enter</span>
+
+    <!-- Grammar panel -->
+    <div id="panel-correct" class="panel active">
+      <div class="toolbar">
+        <button class="btn-primary" id="correct-btn" onclick="correctGrammar()">
+          <span class="spinner"></span>
+          <span class="btn-label">Correct Grammar</span>
+        </button>
+        <button class="btn-ghost" onclick="clearAll()">Clear</button>
+        <div class="toolbar-right">
+          <span class="char-count" id="char-count">0 chars</span>
+          <span class="hint">Ctrl+Enter</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rephrase panel -->
+    <div id="panel-rephrase" class="panel">
+      <div class="style-pills" style="margin-top:0.9rem">
+        <button class="style-pill selected" data-style="formal" onclick="selectStyle(this)">Formal</button>
+        <button class="style-pill" data-style="casual" onclick="selectStyle(this)">Casual</button>
+        <button class="style-pill" data-style="concise" onclick="selectStyle(this)">Concise</button>
+        <button class="style-pill" data-style="expanded" onclick="selectStyle(this)">Expanded</button>
+        <button class="style-pill" data-style="professional" onclick="selectStyle(this)">Professional</button>
+        <button class="style-pill" data-style="simple" onclick="selectStyle(this)">Simple</button>
+      </div>
+      <div class="toolbar">
+        <button class="btn-primary" id="rephrase-btn" onclick="rephraseText()">
+          <span class="spinner"></span>
+          <span class="btn-label">Rephrase Text</span>
+        </button>
+        <button class="btn-ghost" onclick="clearAll()">Clear</button>
+        <div class="toolbar-right">
+          <span class="char-count" id="char-count-2">0 chars</span>
+        </div>
       </div>
     </div>
   </div>
@@ -218,22 +297,49 @@
 <script>
   const inputEl  = document.getElementById('input');
   const countEl  = document.getElementById('char-count');
+  const countEl2 = document.getElementById('char-count-2');
   const resultEl = document.getElementById('result');
   const btn      = document.getElementById('correct-btn');
+  const repBtn   = document.getElementById('rephrase-btn');
   let correctedText = '';
+  let activeTab = 'correct';
+  let selectedStyle = 'formal';
 
   inputEl.addEventListener('input', () => {
     const n = inputEl.value.length;
-    countEl.textContent = `${n.toLocaleString()} char${n !== 1 ? 's' : ''}`;
+    const str = `${n.toLocaleString()} char${n !== 1 ? 's' : ''}`;
+    countEl.textContent = str;
+    countEl2.textContent = str;
   });
 
   inputEl.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') correctGrammar();
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      activeTab === 'correct' ? correctGrammar() : rephraseText();
+    }
   });
+
+  function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && tab === 'correct') || (i === 1 && tab === 'rephrase'));
+    });
+    document.getElementById('panel-correct').classList.toggle('active', tab === 'correct');
+    document.getElementById('panel-rephrase').classList.toggle('active', tab === 'rephrase');
+    resultEl.innerHTML = '';
+    resultEl.classList.remove('show');
+    correctedText = '';
+  }
+
+  function selectStyle(el) {
+    document.querySelectorAll('.style-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedStyle = el.dataset.style;
+  }
 
   function clearAll() {
     inputEl.value = '';
     countEl.textContent = '0 chars';
+    countEl2.textContent = '0 chars';
     resultEl.innerHTML = '';
     resultEl.classList.remove('show');
     correctedText = '';
@@ -385,6 +491,79 @@
     const b = resultEl.querySelector('[onclick="copyText()"]');
     b.textContent = 'Copied!';
     setTimeout(() => b.textContent = 'Copy', 2000);
+  }
+
+  /* ── Rephrase flow ───────────────────────────────────── */
+  async function rephraseText() {
+    const text = inputEl.value;
+    if (!text.trim()) { inputEl.focus(); return; }
+
+    repBtn.classList.add('loading');
+    repBtn.disabled = true;
+    correctedText = '';
+
+    const styleLabel = selectedStyle.charAt(0).toUpperCase() + selectedStyle.slice(1);
+    resultEl.innerHTML = `<div class="card"><div class="result-body" id="stream-out"></div></div>`;
+    resultEl.classList.add('show');
+    const streamOut = document.getElementById('stream-out');
+
+    try {
+      const res = await fetch('/api/rephrase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, style: selectedStyle }),
+      });
+
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({ error: 'Request failed' }));
+        throw new Error(d.error || 'Request failed');
+      }
+
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const payload = line.slice(6);
+          if (payload === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(payload);
+            if (parsed.error) throw new Error(parsed.error);
+            if (parsed.text) {
+              correctedText += parsed.text;
+              streamOut.textContent = correctedText;
+            }
+          } catch (e) {
+            if (e.message !== 'Unexpected end of JSON input') throw e;
+          }
+        }
+      }
+
+      const copyBtn = `<button class="btn-ghost" onclick="copyText()">Copy</button>`;
+      resultEl.innerHTML = `
+        <div class="result-meta">
+          <span class="pill pill-blue">✓ ${styleLabel} style</span>
+          ${copyBtn}
+        </div>
+        <div class="card">
+          <div class="result-body">${esc(correctedText)}</div>
+        </div>`;
+      resultEl.classList.add('show');
+
+    } catch (err) {
+      resultEl.innerHTML = `<div class="error-box">Error: ${esc(err.message)}</div>`;
+      resultEl.classList.add('show');
+    } finally {
+      repBtn.classList.remove('loading');
+      repBtn.disabled = false;
+    }
   }
 </script>
 </body>

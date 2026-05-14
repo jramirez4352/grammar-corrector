@@ -88,6 +88,73 @@ app.post('/api/correct', async (req, res) => {
   }
 });
 
+const REPHRASE_PROMPTS = {
+  formal:       'Rewrite the following text in a formal, professional tone. Return ONLY the rewritten text, no explanations.',
+  casual:       'Rewrite the following text in a casual, conversational tone. Return ONLY the rewritten text, no explanations.',
+  concise:      'Rewrite the following text more concisely, removing unnecessary words while keeping the core meaning. Return ONLY the rewritten text, no explanations.',
+  expanded:     'Expand and enrich the following text with more detail and description. Return ONLY the rewritten text, no explanations.',
+  professional: 'Rewrite the following text for a business/professional context. Return ONLY the rewritten text, no explanations.',
+  simple:       'Rewrite the following text using simple, easy-to-understand language. Return ONLY the rewritten text, no explanations.',
+};
+
+app.post('/api/rephrase', async (req, res) => {
+  const { text, style } = req.body;
+
+  if (!text || typeof text !== 'string' || !text.trim()) {
+    return res.status(400).json({ error: 'Text is required.' });
+  }
+  if (text.length > 50_000) {
+    return res.status(400).json({ error: 'Text is too long (max 50,000 characters).' });
+  }
+  if (!REPHRASE_PROMPTS[style]) {
+    return res.status(400).json({ error: 'Invalid style.' });
+  }
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+
+  try {
+    if (useGroq) {
+      const stream = await groqClient.chat.completions.create({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 4096,
+        stream: true,
+        messages: [
+          { role: 'system', content: REPHRASE_PROMPTS[style] },
+          { role: 'user', content: text },
+        ],
+      });
+      for await (const chunk of stream) {
+        const delta = chunk.choices[0]?.delta?.content || '';
+        if (delta) res.write(`data: ${JSON.stringify({ text: delta })}\n\n`);
+      }
+    } else {
+      const stream = anthropicClient.messages.stream({
+        model: 'claude-opus-4-7',
+        max_tokens: 4096,
+        system: REPHRASE_PROMPTS[style],
+        messages: [{ role: 'user', content: text }],
+      });
+      stream.on('text', (delta) => {
+        res.write(`data: ${JSON.stringify({ text: delta })}\n\n`);
+      });
+      await stream.finalMessage();
+    }
+
+    res.write('data: [DONE]\n\n');
+    res.end();
+  } catch (err) {
+    const provider = useGroq ? 'Groq' : 'Anthropic';
+    console.error(`${provider} rephrase error:`, err.message);
+    try {
+      res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+      res.end();
+    } catch {}
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Grammar Corrector running at http://localhost:${PORT}`);
