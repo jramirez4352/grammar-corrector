@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import Anthropic from '@anthropic-ai/sdk';
 import Groq from 'groq-sdk';
 import { fileURLToPath } from 'url';
@@ -10,6 +11,15 @@ const app = express();
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(join(__dirname, 'public')));
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please wait a few minutes and try again.' },
+});
+app.use('/api/', limiter);
 
 const useGroq = !!process.env.GROQ_API_KEY;
 const useAnthropic = !!process.env.ANTHROPIC_API_KEY;
