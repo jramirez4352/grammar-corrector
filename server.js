@@ -117,7 +117,8 @@ app.post('/api/translate', async (req, res) => {
 });
 
 // ── Summarize ─────────────────────────────────────────────────────────────────
-const SUMMARIZE_PROMPT = `Summarize the following text concisely, capturing the key points and main ideas. \
+const SUMMARIZE_PROMPT = `Summarize the following text as briefly as possible — aim for 20-30% of the original length. \
+Extract only the most essential points, cutting all filler, examples, and repetition. \
 Fix any grammar or spelling errors. Return ONLY the summary, no explanations or commentary.`;
 
 app.post('/api/summarize', async (req, res) => {
