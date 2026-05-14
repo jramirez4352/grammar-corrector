@@ -15,10 +15,8 @@
       --muted: #6b7280;
       --accent: #2563eb;
       --accent-h: #1d4ed8;
-      --del-bg: #fee2e2;
-      --del-fg: #b91c1c;
-      --add-bg: #dcfce7;
-      --add-fg: #15803d;
+      --del-bg: #fee2e2; --del-fg: #b91c1c;
+      --add-bg: #dcfce7; --add-fg: #15803d;
       --radius: 10px;
     }
 
@@ -60,7 +58,7 @@
 
     textarea {
       width: 100%;
-      min-height: 170px;
+      min-height: 160px;
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 0.75rem 1rem;
@@ -71,168 +69,150 @@
       color: var(--text);
       transition: border-color .15s, box-shadow .15s;
     }
-    textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 0.9rem;
-    }
-    .toolbar-right { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
-
-    button {
-      border: none;
-      border-radius: 8px;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0.55rem 1.15rem;
-      transition: background .15s, opacity .15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover:not(:disabled) { background: var(--accent-h); }
-    .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      font-size: 0.875rem;
-      padding: 0.45rem 0.9rem;
-    }
-    .btn-ghost:hover { background: var(--bg); }
-
-    .char-count { font-size: 0.8125rem; color: var(--muted); }
-    .hint { font-size: 0.775rem; color: #9ca3af; }
-
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.35);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .55s linear infinite;
-      display: none;
-    }
-    .loading .spinner { display: block; }
-    .loading .btn-label { display: none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Result section */
-    #result { display: none; }
-    #result.show { display: block; }
-
-    .result-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      margin-bottom: 1rem;
-    }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 0.3rem 0.7rem;
-      border-radius: 999px;
-    }
-    .pill-ok   { background: var(--add-bg); color: var(--add-fg); }
-    .pill-blue { background: #dbeafe;       color: #1d4ed8; }
-
-    .diff-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    @media (max-width: 600px) { .diff-grid { grid-template-columns: 1fr; } }
-
-    .diff-panel { padding: 1.1rem 1.25rem; }
-
-    .result-body {
-      white-space: pre-wrap;
-      word-break: break-word;
-      line-height: 1.7;
-      font-size: 0.9875rem;
-    }
-
-    del {
-      background: var(--del-bg);
-      color: var(--del-fg);
-      text-decoration: line-through;
-      border-radius: 3px;
-      padding: 0 2px;
-    }
-    ins {
-      background: var(--add-bg);
-      color: var(--add-fg);
-      text-decoration: none;
-      border-radius: 3px;
-      padding: 0 2px;
-    }
-
-    .error-box {
-      background: #fef2f2;
-      border: 1px solid #fca5a5;
-      border-radius: var(--radius);
-      padding: 0.9rem 1.1rem;
-      color: #b91c1c;
-      font-size: 0.9375rem;
-    }
+    textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 
     /* Tabs */
     .tabs {
       display: flex;
-      gap: 0.35rem;
+      gap: 0.25rem;
       margin-bottom: 1.25rem;
       border-bottom: 2px solid var(--border);
-      padding-bottom: 0;
+      overflow-x: auto;
     }
     .tab {
-      background: none;
-      border: none;
-      border-radius: 0;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      color: var(--muted);
-      padding: 0.55rem 1rem;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
+      background: none; border: none; border-radius: 0;
+      font-size: 0.9rem; font-weight: 600; color: var(--muted);
+      padding: 0.55rem 1rem; cursor: pointer; white-space: nowrap;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
       transition: color .15s, border-color .15s;
     }
     .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
     .tab:hover:not(.active) { color: var(--text); }
 
-    /* Style pills */
-    .style-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
+    /* Toolbar */
+    .toolbar { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.9rem; flex-wrap: wrap; }
+    .toolbar-right { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
+
+    /* Buttons */
+    button {
+      border: none; border-radius: 8px; font-size: 0.9375rem; font-weight: 600;
+      cursor: pointer; padding: 0.55rem 1.15rem;
+      transition: background .15s, opacity .15s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
     }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-h); }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border); font-size: 0.875rem; padding: 0.45rem 0.9rem;
+    }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-sm { font-size: 0.8125rem; padding: 0.35rem 0.75rem; }
+
+    /* Spinner */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
+      border-radius: 50%; animation: spin .55s linear infinite; display: none;
+    }
+    .loading .spinner { display: block; }
+    .loading .btn-label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Style pills */
+    .style-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
     .style-pill {
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      border-radius: 999px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--muted);
-      padding: 0.35rem 0.9rem;
-      cursor: pointer;
+      border: 1.5px solid var(--border); background: var(--surface);
+      border-radius: 999px; font-size: 0.875rem; font-weight: 600;
+      color: var(--muted); padding: 0.35rem 0.9rem; cursor: pointer;
       transition: all .15s;
     }
     .style-pill:hover { border-color: var(--accent); color: var(--accent); }
     .style-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+    /* Language select */
+    select {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.5rem 0.85rem; font-size: 0.9375rem; font-family: inherit;
+      color: var(--text); background: var(--surface); cursor: pointer;
+    }
+    select:focus { outline: none; border-color: var(--accent); }
+
+    /* Checkbox toggle */
+    .toggle-label {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 0.875rem; color: var(--muted); cursor: pointer; user-select: none;
+    }
+    .toggle-label input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+
+    /* Panels */
     .panel { display: none; }
     .panel.active { display: block; }
+
+    /* Result */
+    #result { display: none; }
+    #result.show { display: block; }
+
+    .result-meta { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 999px;
+    }
+    .pill-ok     { background: var(--add-bg); color: var(--add-fg); }
+    .pill-blue   { background: #dbeafe; color: #1d4ed8; }
+    .pill-purple { background: #ede9fe; color: #6d28d9; }
+    .pill-orange { background: #fff7ed; color: #c2410c; }
+
+    .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .diff-grid { grid-template-columns: 1fr; } }
+
+    .diff-panel { padding: 1.1rem 1.25rem; }
+
+    .result-body {
+      white-space: pre-wrap; word-break: break-word;
+      line-height: 1.7; font-size: 0.9875rem;
+    }
+
+    del { background: var(--del-bg); color: var(--del-fg); text-decoration: line-through; border-radius: 3px; padding: 0 2px; }
+    ins { background: var(--add-bg); color: var(--add-fg); text-decoration: none; border-radius: 3px; padding: 0 2px; }
+
+    .error-box {
+      background: #fef2f2; border: 1px solid #fca5a5;
+      border-radius: var(--radius); padding: 0.9rem 1.1rem;
+      color: #b91c1c; font-size: 0.9375rem;
+    }
+
+    /* Readability */
+    .readability { font-size: 0.8rem; font-weight: 700; }
+
+    /* Explain section */
+    #explain-section { margin-top: 1rem; display: none; }
+    #explain-section.show { display: block; }
+    .explain-body { white-space: pre-wrap; line-height: 1.75; font-size: 0.9375rem; }
+
+    /* Variations */
+    .variation-card { margin-bottom: 1rem; }
+    .variation-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 0.5rem; }
+
+    /* History */
+    .history-empty { text-align: center; color: var(--muted); padding: 3rem 1rem; font-size: 0.9375rem; }
+    .history-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); cursor: pointer;
+      transition: background .12s;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover { background: var(--bg); }
+    .history-meta { flex: 1; min-width: 0; }
+    .history-type { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 0.2rem; }
+    .history-snippet { font-size: 0.9rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .history-date { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .history-actions { display: flex; gap: 0.4rem; align-items: center; }
+
+    .char-count { font-size: 0.8125rem; color: var(--muted); }
+    .hint { font-size: 0.775rem; color: #9ca3af; }
   </style>
 </head>
 <body>
@@ -240,24 +220,27 @@
 
   <header>
     <h1>Grammar Corrector</h1>
-    <p>Correct grammar or rephrase your text in different styles.</p>
+    <p>Correct, rephrase, translate, summarize — all in one place.</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('correct')">Correct Grammar</button>
-    <button class="tab" onclick="switchTab('rephrase')">Rephrase Text</button>
+    <button class="tab active" onclick="switchTab('correct')">✓ Correct</button>
+    <button class="tab" onclick="switchTab('rephrase')">↺ Rephrase</button>
+    <button class="tab" onclick="switchTab('translate')">⊕ Translate</button>
+    <button class="tab" onclick="switchTab('summarize')">≡ Summarize</button>
+    <button class="tab" onclick="switchTab('history')">⏱ History</button>
   </div>
 
-  <div class="card">
+  <!-- Input card (hidden on History tab) -->
+  <div class="card" id="input-card">
     <label for="input">Your Text</label>
     <textarea id="input" placeholder="Type or paste your text here…" spellcheck="false"></textarea>
 
-    <!-- Grammar panel -->
+    <!-- Correct panel -->
     <div id="panel-correct" class="panel active">
       <div class="toolbar">
         <button class="btn-primary" id="correct-btn" onclick="correctGrammar()">
-          <span class="spinner"></span>
-          <span class="btn-label">Correct Grammar</span>
+          <span class="spinner"></span><span class="btn-label">Correct Grammar</span>
         </button>
         <button class="btn-ghost" onclick="clearAll()">Clear</button>
         <div class="toolbar-right">
@@ -269,7 +252,7 @@
 
     <!-- Rephrase panel -->
     <div id="panel-rephrase" class="panel">
-      <div class="style-pills" style="margin-top:0.9rem">
+      <div class="style-pills">
         <button class="style-pill selected" data-style="formal" onclick="selectStyle(this)">Formal</button>
         <button class="style-pill" data-style="casual" onclick="selectStyle(this)">Casual</button>
         <button class="style-pill" data-style="concise" onclick="selectStyle(this)">Concise</button>
@@ -279,290 +262,457 @@
       </div>
       <div class="toolbar">
         <button class="btn-primary" id="rephrase-btn" onclick="rephraseText()">
-          <span class="spinner"></span>
-          <span class="btn-label">Rephrase Text</span>
+          <span class="spinner"></span><span class="btn-label">Rephrase Text</span>
+        </button>
+        <button class="btn-ghost" onclick="clearAll()">Clear</button>
+        <label class="toggle-label" style="margin-left:0.25rem">
+          <input type="checkbox" id="variations-toggle"> 3 variations
+        </label>
+        <div class="toolbar-right">
+          <span class="char-count" id="char-count-r">0 chars</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Translate panel -->
+    <div id="panel-translate" class="panel">
+      <div class="toolbar">
+        <button class="btn-primary" id="translate-btn" onclick="translateText()">
+          <span class="spinner"></span><span class="btn-label">Translate</span>
+        </button>
+        <select id="lang-select">
+          <option>English</option><option>Spanish</option><option>French</option>
+          <option>German</option><option>Italian</option><option>Portuguese</option>
+          <option>Chinese</option><option>Japanese</option><option>Arabic</option>
+          <option>Russian</option><option>Korean</option><option>Dutch</option>
+        </select>
+        <button class="btn-ghost" onclick="clearAll()">Clear</button>
+        <div class="toolbar-right">
+          <span class="char-count" id="char-count-t">0 chars</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summarize panel -->
+    <div id="panel-summarize" class="panel">
+      <div class="toolbar">
+        <button class="btn-primary" id="summarize-btn" onclick="summarizeText()">
+          <span class="spinner"></span><span class="btn-label">Summarize</span>
         </button>
         <button class="btn-ghost" onclick="clearAll()">Clear</button>
         <div class="toolbar-right">
-          <span class="char-count" id="char-count-2">0 chars</span>
+          <span class="char-count" id="char-count-s">0 chars</span>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- History panel -->
+  <div id="panel-history" class="panel">
+    <div class="card" id="history-list"></div>
+  </div>
+
+  <!-- Result -->
   <div id="result"></div>
+
+  <!-- Explain section (appears below result after correction) -->
+  <div id="explain-section">
+    <div class="card">
+      <div class="result-meta">
+        <span class="pill pill-purple">Explanation of changes</span>
+        <button class="btn-ghost btn-sm" onclick="copyExplain()">Copy</button>
+      </div>
+      <div class="explain-body" id="explain-body"></div>
+    </div>
+  </div>
 
 </div>
 
 <script>
-  const inputEl  = document.getElementById('input');
-  const countEl  = document.getElementById('char-count');
-  const countEl2 = document.getElementById('char-count-2');
-  const resultEl = document.getElementById('result');
-  const btn      = document.getElementById('correct-btn');
-  const repBtn   = document.getElementById('rephrase-btn');
-  let correctedText = '';
-  let activeTab = 'correct';
+  /* ── State ─────────────────────────────────────────────── */
+  const inputEl   = document.getElementById('input');
+  const resultEl  = document.getElementById('result');
+  const explainEl = document.getElementById('explain-section');
+  const explainBody = document.getElementById('explain-body');
+  let activeTab     = 'correct';
   let selectedStyle = 'formal';
+  let lastOriginal  = '';
+  let lastCorrected = '';
+  let lastResult    = '';
+  let explainText   = '';
 
+  const allCounters = ['char-count','char-count-r','char-count-t','char-count-s'];
+
+  /* ── Input counter ─────────────────────────────────────── */
   inputEl.addEventListener('input', () => {
     const n = inputEl.value.length;
     const str = `${n.toLocaleString()} char${n !== 1 ? 's' : ''}`;
-    countEl.textContent = str;
-    countEl2.textContent = str;
+    allCounters.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = str; });
   });
 
   inputEl.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      activeTab === 'correct' ? correctGrammar() : rephraseText();
-    }
+    if (!(e.ctrlKey || e.metaKey) || e.key !== 'Enter') return;
+    ({ correct: correctGrammar, rephrase: rephraseText, translate: translateText, summarize: summarizeText })[activeTab]?.();
   });
 
+  /* ── Tabs ──────────────────────────────────────────────── */
   function switchTab(tab) {
     activeTab = tab;
     document.querySelectorAll('.tab').forEach((t, i) => {
-      t.classList.toggle('active', (i === 0 && tab === 'correct') || (i === 1 && tab === 'rephrase'));
+      t.classList.toggle('active', t.textContent.toLowerCase().includes(tab));
     });
-    document.getElementById('panel-correct').classList.toggle('active', tab === 'correct');
-    document.getElementById('panel-rephrase').classList.toggle('active', tab === 'rephrase');
-    resultEl.innerHTML = '';
-    resultEl.classList.remove('show');
-    correctedText = '';
+    ['correct','rephrase','translate','summarize'].forEach(p => {
+      document.getElementById(`panel-${p}`)?.classList.toggle('active', p === tab);
+    });
+    const inputCard   = document.getElementById('input-card');
+    const histPanel   = document.getElementById('panel-history');
+    inputCard.style.display  = tab === 'history' ? 'none' : '';
+    histPanel.classList.toggle('active', tab === 'history');
+    if (tab === 'history') renderHistory();
+    clearResult();
   }
 
+  /* ── Style pills ───────────────────────────────────────── */
   function selectStyle(el) {
     document.querySelectorAll('.style-pill').forEach(p => p.classList.remove('selected'));
     el.classList.add('selected');
     selectedStyle = el.dataset.style;
   }
 
+  /* ── Clear ─────────────────────────────────────────────── */
   function clearAll() {
     inputEl.value = '';
-    countEl.textContent = '0 chars';
-    countEl2.textContent = '0 chars';
-    resultEl.innerHTML = '';
-    resultEl.classList.remove('show');
-    correctedText = '';
+    allCounters.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '0 chars'; });
+    clearResult();
   }
 
-  /* ── Diff ────────────────────────────────────────────── */
-  function tokenize(text) {
-    return text.match(/[^\s]+|\s+/g) || [];
+  function clearResult() {
+    resultEl.innerHTML = '';
+    resultEl.classList.remove('show');
+    explainEl.classList.remove('show');
+    explainBody.textContent = '';
+    lastOriginal = lastCorrected = lastResult = explainText = '';
   }
+
+  /* ── Utilities ─────────────────────────────────────────── */
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  function tokenize(text) { return text.match(/[^\s]+|\s+/g) || []; }
 
   function diffTokens(a, b) {
     const m = a.length, n = b.length;
     const dp = Array.from({ length: m + 1 }, () => new Int32Array(n + 1));
     for (let i = 1; i <= m; i++)
       for (let j = 1; j <= n; j++)
-        dp[i][j] = a[i-1] === b[j-1]
-          ? dp[i-1][j-1] + 1
-          : Math.max(dp[i-1][j], dp[i][j-1]);
-    const ops = [];
-    let i = m, j = n;
+        dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j], dp[i][j-1]);
+    const ops = []; let i = m, j = n;
     while (i > 0 || j > 0) {
-      if (i > 0 && j > 0 && a[i-1] === b[j-1]) { ops.unshift({ t: '=', v: a[i-1] }); i--; j--; }
-      else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) { ops.unshift({ t: '+', v: b[j-1] }); j--; }
-      else { ops.unshift({ t: '-', v: a[i-1] }); i--; }
+      if (i > 0 && j > 0 && a[i-1] === b[j-1]) { ops.unshift({ t:'=', v:a[i-1] }); i--; j--; }
+      else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) { ops.unshift({ t:'+', v:b[j-1] }); j--; }
+      else { ops.unshift({ t:'-', v:a[i-1] }); i--; }
     }
     return ops;
   }
 
   const isWS = s => /^\s+$/.test(s);
-  const esc  = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
   function renderOrig(ops) {
-    return ops
-      .filter(op => op.t !== '+' || isWS(op.v))
-      .map(op => {
-        const e = esc(op.v);
-        return (op.t === '-' && !isWS(op.v)) ? `<del>${e}</del>` : e;
-      }).join('');
+    return ops.filter(op => op.t !== '+' || isWS(op.v))
+      .map(op => { const e=esc(op.v); return (op.t==='-'&&!isWS(op.v))?`<del>${e}</del>`:e; }).join('');
   }
-
   function renderCorr(ops) {
-    return ops
-      .filter(op => op.t !== '-' || isWS(op.v))
-      .map(op => {
-        const e = esc(op.v);
-        return (op.t === '+' && !isWS(op.v)) ? `<ins>${e}</ins>` : e;
-      }).join('');
+    return ops.filter(op => op.t !== '-' || isWS(op.v))
+      .map(op => { const e=esc(op.v); return (op.t==='+'&&!isWS(op.v))?`<ins>${e}</ins>`:e; }).join('');
   }
 
-  /* ── Render final result ─────────────────────────────── */
-  function showResult(original, corrected) {
-    const changed = original !== corrected;
-    const ops = changed ? diffTokens(tokenize(original), tokenize(corrected)) : [];
-
-    const badge = changed
-      ? `<span class="pill pill-blue">✓ Grammar corrected</span>`
-      : `<span class="pill pill-ok">✓ No changes needed</span>`;
-
-    const copyBtn = `<button class="btn-ghost" onclick="copyText()">Copy</button>`;
-
-    const body = changed ? `
-      <div class="diff-grid">
-        <div class="card diff-panel">
-          <label>Original</label>
-          <div class="result-body">${renderOrig(ops)}</div>
-        </div>
-        <div class="card diff-panel">
-          <label>Corrected</label>
-          <div class="result-body">${renderCorr(ops)}</div>
-        </div>
-      </div>` : `
-      <div class="card">
-        <div class="result-body">${esc(corrected)}</div>
-      </div>`;
-
-    resultEl.innerHTML = `
-      <div class="result-meta">${badge}${copyBtn}</div>
-      ${body}`;
-    resultEl.classList.add('show');
+  /* ── Readability (Flesch-Kincaid) ──────────────────────── */
+  function countSyllables(word) {
+    word = word.toLowerCase().replace(/[^a-z]/g, '');
+    if (word.length <= 3) return 1;
+    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+    const m = word.match(/[aeiouy]{1,2}/g);
+    return m ? m.length : 1;
   }
 
-  /* ── Main correction flow ────────────────────────────── */
+  function readability(text) {
+    const sentences = (text.match(/[.!?]+/g) || []).length || 1;
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    if (words.length < 5) return null;
+    const syllables = words.reduce((s, w) => s + countSyllables(w), 0);
+    const score = Math.max(0, Math.min(100, Math.round(206.835 - 1.015*(words.length/sentences) - 84.6*(syllables/words.length))));
+    const [label, color] =
+      score >= 80 ? ['Very Easy','#15803d'] :
+      score >= 60 ? ['Easy','#16a34a'] :
+      score >= 40 ? ['Standard','#2563eb'] :
+      score >= 20 ? ['Difficult','#d97706'] : ['Very Difficult','#b91c1c'];
+    return { score, label, color, words: words.length };
+  }
+
+  function readabilityPill(text) {
+    const r = readability(text);
+    if (!r) return '';
+    return `<span class="pill" style="background:#f3f4f6;color:${r.color}" title="Flesch Reading Ease: ${r.score}">
+      Readability: ${r.label} (${r.score})
+    </span>`;
+  }
+
+  /* ── Stream helper ─────────────────────────────────────── */
+  async function streamFetch(url, body, onChunk) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({ error: 'Request failed' }));
+      throw new Error(d.error || 'Request failed');
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '', result = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n'); buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const payload = line.slice(6);
+        if (payload === '[DONE]') break;
+        try {
+          const parsed = JSON.parse(payload);
+          if (parsed.error) throw new Error(parsed.error);
+          if (parsed.text) { result += parsed.text; onChunk(result); }
+        } catch (e) { if (e.message !== 'Unexpected end of JSON input') throw e; }
+      }
+    }
+    return result;
+  }
+
+  /* ── Copy helpers ──────────────────────────────────────── */
+  async function copyText() {
+    if (!lastResult) return;
+    await navigator.clipboard.writeText(lastResult);
+    const b = resultEl.querySelector('[onclick="copyText()"]');
+    if (b) { b.textContent = 'Copied!'; setTimeout(() => b.textContent = 'Copy', 2000); }
+  }
+
+  async function copyExplain() {
+    if (!explainText) return;
+    await navigator.clipboard.writeText(explainText);
+    const b = explainEl.querySelector('[onclick="copyExplain()"]');
+    if (b) { b.textContent = 'Copied!'; setTimeout(() => b.textContent = 'Copy', 2000); }
+  }
+
+  async function copyVariation(idx) {
+    const cards = resultEl.querySelectorAll('.result-body');
+    if (cards[idx]) await navigator.clipboard.writeText(cards[idx].textContent);
+    const btns = resultEl.querySelectorAll(`[onclick="copyVariation(${idx})"]`);
+    btns.forEach(b => { b.textContent = 'Copied!'; setTimeout(() => b.textContent = 'Copy', 2000); });
+  }
+
+  /* ── History ───────────────────────────────────────────── */
+  const HISTORY_KEY = 'gc_history';
+
+  function saveHistory(entry) {
+    const h = getHistory();
+    h.unshift({ ...entry, date: new Date().toISOString() });
+    if (h.length > 20) h.pop();
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(h));
+  }
+
+  function getHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; }
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('history-list');
+    const h = getHistory();
+    if (!h.length) {
+      list.innerHTML = '<div class="history-empty">No history yet. Start correcting or rephrasing text.</div>';
+      return;
+    }
+    list.innerHTML = h.map((item, i) => `
+      <div class="history-item">
+        <div class="history-meta">
+          <div class="history-type">${item.type}${item.style ? ` · ${item.style}` : ''}${item.lang ? ` → ${item.lang}` : ''}</div>
+          <div class="history-snippet">${esc(item.original.slice(0, 120))}${item.original.length > 120 ? '…' : ''}</div>
+        </div>
+        <div class="history-actions">
+          <span class="history-date">${new Date(item.date).toLocaleDateString()}</span>
+          <button class="btn-ghost btn-sm" onclick="restoreHistory(${i})">Use</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function restoreHistory(i) {
+    const item = getHistory()[i];
+    if (!item) return;
+    inputEl.value = item.original;
+    const n = item.original.length;
+    const str = `${n.toLocaleString()} char${n !== 1 ? 's' : ''}`;
+    allCounters.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = str; });
+    switchTab(item.type === 'Correct' ? 'correct' : item.type === 'Rephrase' ? 'rephrase' : item.type === 'Translate' ? 'translate' : 'summarize');
+  }
+
+  function clearHistory() {
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
+  }
+
+  /* ── Correct Grammar ───────────────────────────────────── */
   async function correctGrammar() {
     const text = inputEl.value;
     if (!text.trim()) { inputEl.focus(); return; }
-
-    btn.classList.add('loading');
-    btn.disabled = true;
-    correctedText = '';
-
-    // Show streaming card
+    const btn = document.getElementById('correct-btn');
+    btn.classList.add('loading'); btn.disabled = true;
+    clearResult();
     resultEl.innerHTML = `<div class="card"><div class="result-body" id="stream-out"></div></div>`;
     resultEl.classList.add('show');
     const streamOut = document.getElementById('stream-out');
-
     try {
-      const res = await fetch('/api/correct', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-
-      if (!res.ok) {
-        const d = await res.json().catch(() => ({ error: 'Request failed' }));
-        throw new Error(d.error || 'Request failed');
-      }
-
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const payload = line.slice(6);
-          if (payload === '[DONE]') break;
-          try {
-            const parsed = JSON.parse(payload);
-            if (parsed.error) throw new Error(parsed.error);
-            if (parsed.text) {
-              correctedText += parsed.text;
-              streamOut.textContent = correctedText;
-            }
-          } catch (e) {
-            if (e.message !== 'Unexpected end of JSON input') throw e;
-          }
-        }
-      }
-
-      showResult(text, correctedText);
-
+      const corrected = await streamFetch('/api/correct', { text }, r => { streamOut.textContent = r; });
+      lastOriginal  = text;
+      lastCorrected = corrected;
+      lastResult    = corrected;
+      const changed = text !== corrected;
+      const ops = changed ? diffTokens(tokenize(text), tokenize(corrected)) : [];
+      const badge = changed
+        ? `<span class="pill pill-blue">✓ Grammar corrected</span>`
+        : `<span class="pill pill-ok">✓ No changes needed</span>`;
+      const rdPill = readabilityPill(corrected);
+      const explainBtn = changed
+        ? `<button class="btn-ghost btn-sm" onclick="explainChanges()">Explain changes</button>` : '';
+      const body = changed ? `
+        <div class="diff-grid">
+          <div class="card diff-panel"><label>Original</label><div class="result-body">${renderOrig(ops)}</div></div>
+          <div class="card diff-panel"><label>Corrected</label><div class="result-body">${renderCorr(ops)}</div></div>
+        </div>` : `<div class="card"><div class="result-body">${esc(corrected)}</div></div>`;
+      resultEl.innerHTML = `
+        <div class="result-meta">${badge}${rdPill}<button class="btn-ghost btn-sm" onclick="copyText()">Copy</button>${explainBtn}</div>
+        ${body}`;
+      resultEl.classList.add('show');
+      saveHistory({ type: 'Correct', original: text, result: corrected });
     } catch (err) {
       resultEl.innerHTML = `<div class="error-box">Error: ${esc(err.message)}</div>`;
-      resultEl.classList.add('show');
     } finally {
-      btn.classList.remove('loading');
-      btn.disabled = false;
+      btn.classList.remove('loading'); btn.disabled = false;
     }
   }
 
-  async function copyText() {
-    if (!correctedText) return;
-    await navigator.clipboard.writeText(correctedText);
-    const b = resultEl.querySelector('[onclick="copyText()"]');
-    b.textContent = 'Copied!';
-    setTimeout(() => b.textContent = 'Copy', 2000);
+  /* ── Explain changes ───────────────────────────────────── */
+  async function explainChanges() {
+    if (!lastOriginal || !lastCorrected) return;
+    const btn = document.querySelector('[onclick="explainChanges()"]');
+    if (btn) { btn.textContent = 'Loading…'; btn.disabled = true; }
+    explainEl.classList.add('show');
+    explainBody.textContent = '';
+    try {
+      explainText = await streamFetch('/api/explain',
+        { original: lastOriginal, corrected: lastCorrected },
+        r => { explainBody.textContent = r; });
+    } catch (err) {
+      explainBody.textContent = 'Error: ' + err.message;
+    } finally {
+      if (btn) { btn.textContent = 'Explain changes'; btn.disabled = false; }
+    }
   }
 
-  /* ── Rephrase flow ───────────────────────────────────── */
+  /* ── Rephrase ──────────────────────────────────────────── */
   async function rephraseText() {
     const text = inputEl.value;
     if (!text.trim()) { inputEl.focus(); return; }
-
-    repBtn.classList.add('loading');
-    repBtn.disabled = true;
-    correctedText = '';
-
+    const btn = document.getElementById('rephrase-btn');
+    const variations = document.getElementById('variations-toggle').checked;
+    btn.classList.add('loading'); btn.disabled = true;
+    clearResult();
     const styleLabel = selectedStyle.charAt(0).toUpperCase() + selectedStyle.slice(1);
+
+    if (!variations) {
+      resultEl.innerHTML = `<div class="card"><div class="result-body" id="stream-out"></div></div>`;
+      resultEl.classList.add('show');
+      const streamOut = document.getElementById('stream-out');
+      try {
+        const result = await streamFetch('/api/rephrase', { text, style: selectedStyle }, r => { streamOut.textContent = r; });
+        lastResult = result;
+        const rdPill = readabilityPill(result);
+        resultEl.innerHTML = `
+          <div class="result-meta"><span class="pill pill-blue">↺ ${styleLabel}</span>${rdPill}<button class="btn-ghost btn-sm" onclick="copyText()">Copy</button></div>
+          <div class="card"><div class="result-body">${esc(result)}</div></div>`;
+        resultEl.classList.add('show');
+        saveHistory({ type: 'Rephrase', style: styleLabel, original: text, result });
+      } catch (err) {
+        resultEl.innerHTML = `<div class="error-box">Error: ${esc(err.message)}</div>`;
+      }
+    } else {
+      resultEl.innerHTML = `<div class="result-meta"><span class="pill pill-blue">↺ ${styleLabel} — 3 variations</span></div>` +
+        [1,2,3].map(i => `
+          <div class="card variation-card">
+            <div class="variation-label">Variation ${i}</div>
+            <div class="result-body" id="var-${i}"></div>
+            <div style="margin-top:0.75rem"><button class="btn-ghost btn-sm" onclick="copyVariation(${i-1})">Copy</button></div>
+          </div>`).join('');
+      resultEl.classList.add('show');
+      try {
+        for (let i = 1; i <= 3; i++) {
+          const el = document.getElementById(`var-${i}`);
+          await streamFetch('/api/rephrase', { text, style: selectedStyle }, r => { el.textContent = r; });
+        }
+        saveHistory({ type: 'Rephrase', style: `${styleLabel} ×3`, original: text, result: '' });
+      } catch (err) {
+        resultEl.innerHTML += `<div class="error-box">Error: ${esc(err.message)}</div>`;
+      }
+    }
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+
+  /* ── Translate ─────────────────────────────────────────── */
+  async function translateText() {
+    const text = inputEl.value;
+    if (!text.trim()) { inputEl.focus(); return; }
+    const btn = document.getElementById('translate-btn');
+    const lang = document.getElementById('lang-select').value;
+    btn.classList.add('loading'); btn.disabled = true;
+    clearResult();
     resultEl.innerHTML = `<div class="card"><div class="result-body" id="stream-out"></div></div>`;
     resultEl.classList.add('show');
     const streamOut = document.getElementById('stream-out');
-
     try {
-      const res = await fetch('/api/rephrase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, style: selectedStyle }),
-      });
-
-      if (!res.ok) {
-        const d = await res.json().catch(() => ({ error: 'Request failed' }));
-        throw new Error(d.error || 'Request failed');
-      }
-
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const payload = line.slice(6);
-          if (payload === '[DONE]') break;
-          try {
-            const parsed = JSON.parse(payload);
-            if (parsed.error) throw new Error(parsed.error);
-            if (parsed.text) {
-              correctedText += parsed.text;
-              streamOut.textContent = correctedText;
-            }
-          } catch (e) {
-            if (e.message !== 'Unexpected end of JSON input') throw e;
-          }
-        }
-      }
-
-      const copyBtn = `<button class="btn-ghost" onclick="copyText()">Copy</button>`;
+      const result = await streamFetch('/api/translate', { text, targetLang: lang }, r => { streamOut.textContent = r; });
+      lastResult = result;
       resultEl.innerHTML = `
-        <div class="result-meta">
-          <span class="pill pill-blue">✓ ${styleLabel} style</span>
-          ${copyBtn}
-        </div>
-        <div class="card">
-          <div class="result-body">${esc(correctedText)}</div>
-        </div>`;
+        <div class="result-meta"><span class="pill pill-orange">⊕ ${lang}</span><button class="btn-ghost btn-sm" onclick="copyText()">Copy</button></div>
+        <div class="card"><div class="result-body">${esc(result)}</div></div>`;
       resultEl.classList.add('show');
-
+      saveHistory({ type: 'Translate', lang, original: text, result });
     } catch (err) {
       resultEl.innerHTML = `<div class="error-box">Error: ${esc(err.message)}</div>`;
-      resultEl.classList.add('show');
     } finally {
-      repBtn.classList.remove('loading');
-      repBtn.disabled = false;
+      btn.classList.remove('loading'); btn.disabled = false;
+    }
+  }
+
+  /* ── Summarize ─────────────────────────────────────────── */
+  async function summarizeText() {
+    const text = inputEl.value;
+    if (!text.trim()) { inputEl.focus(); return; }
+    const btn = document.getElementById('summarize-btn');
+    btn.classList.add('loading'); btn.disabled = true;
+    clearResult();
+    resultEl.innerHTML = `<div class="card"><div class="result-body" id="stream-out"></div></div>`;
+    resultEl.classList.add('show');
+    const streamOut = document.getElementById('stream-out');
+    try {
+      const result = await streamFetch('/api/summarize', { text }, r => { streamOut.textContent = r; });
+      lastResult = result;
+      resultEl.innerHTML = `
+        <div class="result-meta"><span class="pill pill-purple">≡ Summary</span><button class="btn-ghost btn-sm" onclick="copyText()">Copy</button></div>
+        <div class="card"><div class="result-body">${esc(result)}</div></div>`;
+      resultEl.classList.add('show');
+      saveHistory({ type: 'Summarize', original: text, result });
+    } catch (err) {
+      resultEl.innerHTML = `<div class="error-box">Error: ${esc(err.message)}</div>`;
+    } finally {
+      btn.classList.remove('loading'); btn.disabled = false;
     }
   }
 </script>
