@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grammar Corrector</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --border: #e2e2e2;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-h: #1d4ed8;
+      --del-bg: #fee2e2;
+      --del-fg: #b91c1c;
+      --add-bg: #dcfce7;
+      --add-fg: #15803d;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1rem 4rem;
+    }
+
+    .wrap { width: 100%; max-width: 860px; }
+
+    header { text-align: center; margin-bottom: 2rem; }
+    header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+    header p  { color: var(--muted); margin-top: 0.4rem; font-size: 1rem; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      line-height: 1.65;
+      resize: vertical;
+      color: var(--text);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.9rem;
+    }
+    .toolbar-right { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.55rem 1.15rem;
+      transition: background .15s, opacity .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-h); }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.875rem;
+      padding: 0.45rem 0.9rem;
+    }
+    .btn-ghost:hover { background: var(--bg); }
+
+    .char-count { font-size: 0.8125rem; color: var(--muted); }
+    .hint { font-size: 0.775rem; color: #9ca3af; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .55s linear infinite;
+      display: none;
+    }
+    .loading .spinner { display: block; }
+    .loading .btn-label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Result section */
+    #result { display: none; }
+    #result.show { display: block; }
+
+    .result-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+    }
+    .pill-ok   { background: var(--add-bg); color: var(--add-fg); }
+    .pill-blue { background: #dbeafe;       color: #1d4ed8; }
+
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 600px) { .diff-grid { grid-template-columns: 1fr; } }
+
+    .diff-panel { padding: 1.1rem 1.25rem; }
+
+    .result-body {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.7;
+      font-size: 0.9875rem;
+    }
+
+    del {
+      background: var(--del-bg);
+      color: var(--del-fg);
+      text-decoration: line-through;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    ins {
+      background: var(--add-bg);
+      color: var(--add-fg);
+      text-decoration: none;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: var(--radius);
+      padding: 0.9rem 1.1rem;
+      color: #b91c1c;
+      font-size: 0.9375rem;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Grammar Corrector</h1>
+    <p>Paste your text and get instant corrections powered by Claude.</p>
+  </header>
+
+  <div class="card">
+    <label for="input">Your Text</label>
+    <textarea id="input" placeholder="Type or paste your text here…" spellcheck="false"></textarea>
+    <div class="toolbar">
+      <button class="btn-primary" id="correct-btn" onclick="correctGrammar()">
+        <span class="spinner"></span>
+        <span class="btn-label">Correct Grammar</span>
+      </button>
+      <button class="btn-ghost" onclick="clearAll()">Clear</button>
+      <div class="toolbar-right">
+        <span class="char-count" id="char-count">0 chars</span>
+        <span class="hint">Ctrl+Enter</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="result"></div>
+
+</div>
+
+<script>
+  const inputEl  = document.getElementById('input');
+  const countEl  = document.getElementById('char-count');
+  const resultEl = document.getElementById('result');
+  const btn      = document.getElementById('correct-btn');
+  let correctedText = '';
+
+  inputEl.addEventListener('input', () => {
+    const n = inputEl.value.length;
+    countEl.textContent = `${n.toLocaleString()} char${n !== 1 ? 's' : ''}`;
+  });
+
+  inputEl.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') correctGrammar();
+  });
+
+  function clearAll() {
+    inputEl.value = '';
+    countEl.textContent = '0 chars';
+    resultEl.innerHTML = '';
+    resultEl.classList.remove('show');
+    correctedText = '';
+  }
+
+  /* ── Diff ────────────────────────────────────────────── */
+  function tokenize(text) {
+    return text.match(/[^\s]+|\s+/g) || [];
+  }
+
+  function diffTokens(a, b) {
+    const m = a.length, n = b.length;
+    const dp = Array.from({ length: m + 1 }, () => new Int32Array(n + 1));
+    for (let i = 1; i <= m; i++)
+      for (let j = 1; j <= n; j++)
+        dp[i][j] = a[i-1] === b[j-1]
+          ? dp[i-1][j-1] + 1
+          : Math.max(dp[i-1][j], dp[i][j-1]);
+    const ops = [];
+    let i = m, j = n;
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && a[i-1] === b[j-1]) { ops.unshift({ t: '=', v: a[i-1] }); i--; j--; }
+      else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) { ops.unshift({ t: '+', v: b[j-1] }); j--; }
+      else { ops.unshift({ t: '-', v: a[i-1] }); i--; }
+    }
+    return ops;
+  }
+
+  const isWS = s => /^\s+$/.test(s);
+  const esc  = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  function renderOrig(ops) {
+    return ops
+      .filter(op => op.t !== '+' || isWS(op.v))
+      .map(op => {
+        const e = esc(op.v);
+        return (op.t === '-' && !isWS(op.v)) ? `<del>${e}</del>` : e;
+      }).join('');
+  }
+
+  function renderCorr(ops) {
+    return ops
+      .filter(op => op.t !== '-' || isWS(op.v))
+      .map(op => {
+        const e = esc(op.v);
+        return (op.t === '+' && !isWS(op.v)) ? `<ins>${e}</ins>` : e;
+      }).join('');
+  }
+
+  /* ── Render final result ─────────────────────────────── */
+  function showResult(original, corrected) {
+    const changed = original !== corrected;
+    const ops = changed ? diffTokens(tokenize(original), tokenize(corrected)) : [];
+
+    const badge = changed
+      ? `<span class="pill pill-blue">✓ Grammar corrected</span>`
+      : `<span class="pill pill-ok">✓ No changes needed</span>`;
+
+    const copyBtn = `<button class="btn-ghost" onclick="copyText()">Copy</button>`;
+
+    const body = changed ? `
+      <div class="diff-grid">
+        <div class="card diff-panel">
+          <label>Original</label>
+          <div class="result-body">${renderOrig(ops)}</div>
+        </div>
+        <div class="card diff-panel">
+          <label>Corrected</label>
+          <div class="result-body">${renderCorr(ops)}</div>
+        </div>
+      </div>` : `
+      <div class="card">
+        <div class="result-body">${esc(corrected)}</div>
+      </div>`;
+
+    resultEl.innerHTML = `
+      <div class="result-meta">${badge}${copyBtn}</div>
+      ${body}`;
+    resultEl.classList.add('show');
+  }
+
+  /* ── Main correction flow ────────────────────────────── */
+  async function correctGrammar() {
+    const text = inputEl.value;
+    if (!text.trim()) { inputEl.focus(); return; }
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    correctedText = '';
+
+    // Show streaming card
+    resultEl.innerHTML = `<div class="card"><div class="result-body" id="stream-out"></div></div>`;
+    resultEl.classList.add('show');
+    const streamOut = document.getElementById('stream-out');
+
+    try {
+      const res = await fetch('/api/correct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({ error: 'Request failed' }));
+        throw new Error(d.error || 'Request failed');
+      }
+
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const payload = line.slice(6);
+          if (payload === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(payload);
+            if (parsed.error) throw new Error(parsed.error);
+            if (parsed.text) {
+              correctedText += parsed.text;
+              streamOut.textContent = correctedText;
+            }
+          } catch (e) {
+            if (e.message !== 'Unexpected end of JSON input') throw e;
+          }
+        }
+      }
+
+      showResult(text, correctedText);
+
+    } catch (err) {
+      resultEl.innerHTML = `<div class="error-box">Error: ${esc(err.message)}</div>`;
+      resultEl.classList.add('show');
+    } finally {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
+  }
+
+  async function copyText() {
+    if (!correctedText) return;
+    await navigator.clipboard.writeText(correctedText);
+    const b = resultEl.querySelector('[onclick="copyText()"]');
+    b.textContent = 'Copied!';
+    setTimeout(() => b.textContent = 'Copy', 2000);
+  }
+</script>
+</body>
+</html>
